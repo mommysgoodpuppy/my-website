@@ -13,5 +13,16 @@
     "react": "npm:react",
     "react-dom": "npm:react-dom",
     "three": "npm:three@^0.168.0"
+  },
+  "deploy": {
+    "project": "a3a1d98b-b655-4ebf-b5ea-72d1a715dce0",
+    "exclude": [
+      "**/node_modules",
+      "**/node_modules",
+      "/public",
+      "/src"
+    ],
+    "include": [],
+    "entrypoint": "staging\\serve.ts"
   }
 }

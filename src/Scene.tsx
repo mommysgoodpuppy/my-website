@@ -79,7 +79,7 @@ function HUD() {
 }
 
 // Box Component 
-function Box(props: any) {
+export function Box(props: any) {
     const meshRef = useRef<THREE.Mesh>(null!);
     const [hovered, setHover] = useState(false);
     const [active, setActive] = useState(false);

@@ -15,7 +15,6 @@
         svg {
             border: 1px solid #ccc;
             background: white;
-            float: left;
         }
     </style>
 </head>
@@ -55,7 +54,7 @@ const TILES = {
     GOLD: { name: 'Gold', color: '#fbbf24' },
     BAD: { name: 'Bad', color: '#ef4444' },
     SHOP: { name: 'Shop', color: '#3b82f6' },
-    TELEPORT: { name: 'Teleporter', color: '#f97316' }
+    TELEPORT: { name: 'Tele', color: '#f97316' }
 };
 
 let edgeConnectionCounter = 1;
@@ -179,24 +178,6 @@ class GameMap {
         return true;
     }
 
-    forceMovePlayer(playerName, tileId) {
-        if (!this.players.has(playerName)) {
-            gameConsole.log(`Player "${playerName}" does not exist.`);
-            return false;
-        }
-
-        if (!this.tiles[tileId]) {
-            gameConsole.log(`Tile ID ${tileId} does not exist.`);
-            return false;
-        }
-
-        const playerData = this.players.get(playerName);
-        playerData.position = tileId;
-        this.players.set(playerName, playerData);
-        return true;
-    }
-
-
 
     //#endregion 
 
@@ -264,14 +245,14 @@ class GameMap {
     }
     
     // Add method to move player
-    movePlayer(direction) {
+    movePlayer(targetTileId) {
         const moves = this.getAvailableMoves();
-        const moveDirection = moves.find(move => getDirectionName(move.side).toLowerCase() === direction.toLowerCase());
-
-        if (moveDirection) {
+        const validMove = moves.find(move => move.to === targetTileId);
+        
+        if (validMove) {
             const playerData = this.players.get(this.currentPlayer);
             if (playerData) {
-                playerData.position = moveDirection.to;
+                playerData.position = targetTileId;
                 this.players.set(this.currentPlayer, playerData);
                 return true;
             }
@@ -760,7 +741,7 @@ function initializeGameConsole() {
     const consoleOutput = document.createElement('div');
     consoleOutput.style.cssText = `
         width: 500px;
-        height: 350px;
+        height: 200px;
         border: 1px solid #ccc;
         margin: 10px 0;
         padding: 10px;
@@ -822,7 +803,7 @@ function displayGameStatus() {
     
     gameConsole.clear();
     gameConsole.log(`Current player: ${gameMap.currentPlayer}`);
-    gameConsole.log(`Position: Tile, type: (${TILES[currentTile.type].name})`);
+    gameConsole.log(`Position: Tile ${currentPosition} (${TILES[currentTile.type].name})`);
 
     // Show other players on same tile
     const otherPlayersHere = Array.from(gameMap.players.entries())
@@ -837,22 +818,21 @@ function displayGameStatus() {
     moves.forEach(move => {
         const direction = getDirectionName(move.side);
         if (move.type === 'loop') {
-            gameConsole.log(`- ${direction}`);
+            gameConsole.log(`- ${direction} to ${move.to} (loop)`);
         } else {
-            gameConsole.log(`- ${direction}`);
+            gameConsole.log(`- ${direction} to ${move.to}`);
         }
     });
-
-
-    gameConsole.log('COMMANDS:');
-    gameConsole.log('- move <direction>: Move to specified tile');
-    gameConsole.log('- force move <playerName> <tileNumber(0-20)>: manually move a player to tile');
+    
+    gameConsole.log('\nCommands:');
+    gameConsole.log('- move <tileId>: Move to specified tile');
     gameConsole.log('- name <playerName>: Add a new player');
     gameConsole.log('- start: Start game (randomize positions)');
     gameConsole.log('- random: Randomize current player position');
     gameConsole.log('- turn: Next player\'s turn');
+    gameConsole.log('- check: Show available moves');
     gameConsole.log('- map: Toggle map visibility');
-
+    gameConsole.log('- help: Show this help');
 }
 
 
@@ -935,30 +915,14 @@ window.addEventListener('load', () => {
                     }
                 }
             } else if (command.startsWith('move ')) {
-                const direction = command.slice(5).trim(); // Take everything after "move " as direction
-                if (gameMap.movePlayer(direction)) {
+                const targetId = parseInt(command.split(' ')[1]);
+                if (isNaN(targetId)) {
+                    gameConsole.log('Invalid tile ID');
+                } else if (gameMap.movePlayer(targetId)) {
                     gameMap.render();
                     displayGameStatus();
                 } else {
-                    gameConsole.log('Invalid move! Type "check" to see possible directions.');
-                }
-
-            } else if (command.startsWith('force move ')) {
-                const parts = command.split(' ');
-                if (parts.length === 4) {
-                    const playerName = parts[2];
-                    const tileId = parseInt(parts[3]);
-                    if (isNaN(tileId)) {
-                        gameConsole.log('Invalid tile ID.');
-                    } else if (gameMap.forceMovePlayer(playerName, tileId)) {
-                        gameMap.render();
-                        displayGameStatus();
-                        gameConsole.log(`Forced ${playerName} to move to tile ${tileId}.`);
-                    } else {
-                        gameConsole.log('Failed to force move. Check player name and tile ID.');
-                    }
-                } else {
-                    gameConsole.log('Usage: force move <playerName> <tileId>');
+                    gameConsole.log('Invalid move! Type "check" to see possible moves.');
                 }
             } else {
                 gameConsole.log('Unknown command. Type "help" for available commands.');
