@@ -1,7 +1,8 @@
 // Define the mapping of subdomains to DIDs
 const didMap: Record<string, string> = {
     "hotbloodedheroine.petplay.fi": "did:plc:n33fuccbgxbf2tj5bq7ekwha",
-    "goodpuppies.petplay.fi": "did:plc:qge6rhexh43a7y6a7rk46izg"
+    "goodpuppies.petplay.fi": "did:plc:qge6rhexh43a7y6a7rk46izg",
+    "mommysgoodpuppy.petplay.fi": "did:plc:ah3bzdmidpstq44hv5fp7enb"
 };
 
 async function handleRequest(request: Request): Promise<Response> {
