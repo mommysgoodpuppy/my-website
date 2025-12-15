@@ -64,6 +64,12 @@ async function handleRequest(request: Request): Promise<Response> {
   const url = new URL(request.url);
   const host = request.headers.get("host") || "";
 
+  // Handle subdomain redirects to Bluesky profiles
+  if (host in didMap && url.pathname === "/") {
+    const blueskyProfile = `https://bsky.app/profile/${host}`;
+    return Response.redirect(blueskyProfile, 301);
+  }
+
   // Handle the /.well-known/atproto-did endpoint
   if (url.pathname === "/.well-known/atproto-did") {
     const did = didMap[host];
