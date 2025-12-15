@@ -1,0 +1,12 @@
+[submodule "submodules/jellysliderxr"]
+	path = submodules/jellysliderxr
+	url = https://github.com/mommysgoodpuppy/jellysliderxr
+[submodule "submodules/GOLXROG"]
+	path = submodules/GOLXROG
+	url = https://github.com/mommysgoodpuppy/GOLXROG
+[submodule "submodules/flickmouse"]
+	path = submodules/flickmouse
+	url = https://github.com/mommysgoodpuppy/flickmouse
+[submodule "submodules/bodywebxr"]
+	path = submodules/bodywebxr
+	url = https://github.com/mommysgoodpuppy/bodywebxr

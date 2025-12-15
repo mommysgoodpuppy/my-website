@@ -19,6 +19,7 @@ const VRMModel: React.FC<VRMModelProps> = ({ url }: any) => {
     useEffect(() => {
         if (gltf && gltf.userData.vrm) {
             vrm.current = gltf.userData.vrm;
+            if (!vrm.current) throw new Error("nope")
 
             vrm.current.scene.position.z = 2;
 
