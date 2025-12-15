@@ -18,17 +18,17 @@ let cachedHomePage: string | null = null;
 const routeMap: Record<string, RouteInfo> = {
   "/mapgame.html": {
     name: "Map Game",
-    description: "Interactive map-based game",
+    description: "For gamemasters, Magic The Noah style map game",
     filePath: "./submodules/mapgame/index.html",
   },
   "/jellysliderxr.html": {
     name: "Jelly Slider XR",
-    description: "WebXR slider experiment with jelly physics",
+    description: "Demo of webgpu, webxr made with typegpu",
     filePath: "./submodules/jellysliderxr/dist/index.html",
   },
   "/flickmouse.html": {
     name: "Flick Mouse",
-    description: "Control your mouse with Touch SDK smartwatch",
+    description: "Flickable pointer demo with wowmouse touch-sdk",
     filePath: "./submodules/flickmouse/dist/index.html",
   },
   "/webxrbody.html": {
@@ -40,6 +40,11 @@ const routeMap: Record<string, RouteInfo> = {
     name: "Game of Life XR",
     description: "Conway's Game of Life in WebXR",
     filePath: "./submodules/GOLXROG/dist/index.html",
+  },
+  "/mek.html": {
+    name: "mekgame",
+    description: "webxr mech game in development",
+    filePath: "./submodules/mekgame/dist/index.html",
   },
 };
 
@@ -133,6 +138,16 @@ async function handleRequest(request: Request): Promise<Response> {
         a:hover {
             background: #333;
         }
+        .contact a {
+            display: inline;
+            padding: 0;
+            background: none;
+            border-radius: 0;
+        }
+        .contact a:hover {
+            background: none;
+            text-decoration: underline;
+        }
         .description {
             color: #999;
             font-size: 14px;
@@ -143,6 +158,13 @@ async function handleRequest(request: Request): Promise<Response> {
 <body>
     <h1>My Projects & Demos</h1>
     <ul>${projectList}
+    </ul>
+    <hr style="border: 1px solid #444; margin: 40px 0;">
+    <h2>Contact</h2>
+    <ul class="contact">
+        <li><strong>Bluesky:</strong> <a href="https://hotbloodedheroine.petplay.fi" target="_blank">hotbloodedheroine.petplay.fi</a></li>
+        <li><strong>GitHub:</strong> <a href="https://github.com/mommysgoodpuppy" target="_blank">github.com/mommysgoodpuppy</a></li>
+        <li><strong>Discord:</strong> theelectronicfreezer</li>
     </ul>
 </body>
 </html>`;
@@ -191,6 +213,7 @@ async function handleRequest(request: Request): Promise<Response> {
       `./submodules/jellysliderxr/dist${url.pathname}`,
       `./submodules/flickmouse/dist${url.pathname}`,
       `./submodules/GOLXROG/dist${url.pathname}`,
+      `./submodules/mekgame/dist${url.pathname}`,
     ];
 
     for (const filePath of possiblePaths) {

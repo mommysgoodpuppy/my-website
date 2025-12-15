@@ -4,12 +4,14 @@
     "buildjelly": "cd submodules/jellysliderxr && npm run build",
     "buildflick": "cd submodules/flickmouse && deno task build",
     "buildgol":   "cd submodules/GOLXROG && deno task build",
+    "buildmek": "cd submodules/mekgame && npm run build",
     "build": {
       "command": "deno run -A --node-modules-dir npm:vite build",
       "dependencies": [
         "buildjelly",
         "buildflick",
-        "buildgol"
+        "buildgol",
+        "buildmek"
       ]
     },
     "preview": "deno run -A --node-modules-dir npm:vite preview",

@@ -10,3 +10,6 @@
 [submodule "submodules/bodywebxr"]
 	path = submodules/bodywebxr
 	url = https://github.com/mommysgoodpuppy/bodywebxr
+[submodule "submodules/mekgame"]
+	path = submodules/mekgame
+	url = https://github.com/goodpuppies/mekgame.git
