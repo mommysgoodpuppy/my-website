@@ -1,6 +1,10 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@std/fs@1": "1.0.24",
+    "jsr:@std/internal@^1.0.14": "1.0.14",
+    "jsr:@std/path@1": "1.1.5",
+    "jsr:@std/path@^1.1.5": "1.1.5",
     "npm:@pixiv/three-vrm@^3.1.1": "3.4.0_three@0.176.0",
     "npm:@react-three/drei@^10.0.8": "10.0.8_@react-three+fiber@9.1.2__react@19.1.0__react-dom@19.1.0___react@19.1.0__three@0.176.0__@types+react@19.1.4__use-sync-external-store@1.5.0___react@19.1.0_react@19.1.0_react-dom@19.1.0__react@19.1.0_three@0.176.0_@types+react@19.1.4_use-sync-external-store@1.5.0__react@19.1.0",
     "npm:@react-three/fiber@^9.1.2": "9.1.2_react@19.1.0_react-dom@19.1.0__react@19.1.0_three@0.176.0_@types+react@19.1.4_use-sync-external-store@1.5.0__react@19.1.0",
@@ -12,6 +16,24 @@
     "npm:three@0.176": "0.176.0",
     "npm:vite@*": "6.3.5_picomatch@4.0.2",
     "npm:vite@^5.2.10": "5.4.19"
+  },
+  "jsr": {
+    "@std/fs@1.0.24": {
+      "integrity": "f3061b45b81673a2bece689da041df32d174be064c89eb6397fb5718d3fb7877",
+      "dependencies": [
+        "jsr:@std/internal",
+        "jsr:@std/path@^1.1.5"
+      ]
+    },
+    "@std/internal@1.0.14": {
+      "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
+    },
+    "@std/path@1.1.5": {
+      "integrity": "ccea00982ea28c36becaf6e62f855406c76a8c32d462f66f415bbb7d83a271bc",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    }
   },
   "npm": {
     "@ampproject/remapping@2.3.0": {

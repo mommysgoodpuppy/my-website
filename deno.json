@@ -1,21 +1,24 @@
 {
   "tasks": {
     "dev": "deno run -A --node-modules-dir npm:vite --host",
-    "buildjelly": "cd submodules/jellysliderxr && npm run build",
+    "buildjelly": "cd submodules/jellysliderxr && deno run -A --node-modules-dir npm:vite build",
     "buildflick": "cd submodules/flickmouse && deno task build",
     "buildgol":   "cd submodules/GOLXROG && deno task build",
-    "buildmek": "cd submodules/mekgame && npm run build",
+    "buildmek": "cd submodules/mekgame && bun install && bun run build",
+    "buildvite": "deno run -A --node-modules-dir npm:vite build",
     "build": {
-      "command": "deno run -A --node-modules-dir npm:vite build",
+      "command": "deno run -A scripts/build-site.ts",
       "dependencies": [
         "buildjelly",
         "buildflick",
         "buildgol",
-        "buildmek"
+        "buildmek",
+        "buildvite"
       ]
     },
+    "dns": "deno run -A scripts/dns-records.ts",
     "preview": "deno run -A --node-modules-dir npm:vite preview",
-    "serve": "deno run --allow-net --allow-read https://deno.land/std@0.157.0/http/file_server.ts dist/"
+    "serve": "deno run --allow-net --allow-read jsr:@std/http/file-server _site/"
   },
   "compilerOptions": {
     "lib": [
@@ -33,16 +36,5 @@
     "react": "npm:react",
     "react-dom": "npm:react-dom",
     "three": "npm:three@^0.176.0"
-  },
-  "deploy": {
-    "project": "a3a1d98b-b655-4ebf-b5ea-72d1a715dce0",
-    "exclude": [
-      "**/node_modules",
-      "**/node_modules",
-      "/public",
-      "/src"
-    ],
-    "include": [],
-    "entrypoint": "staging\\serve.ts"
   }
 }

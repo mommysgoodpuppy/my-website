@@ -13,3 +13,6 @@
 [submodule "submodules/mekgame"]
 	path = submodules/mekgame
 	url = https://github.com/goodpuppies/mekgame.git
+[submodule "submodules/mapgame"]
+	path = submodules/mapgame
+	url = https://github.com/mommysgoodpuppy/mapgame.git

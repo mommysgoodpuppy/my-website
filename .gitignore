@@ -25,3 +25,5 @@ dist-ssr
 *.sw?
 
 public/models/Velle.vrm
+# Generated static site
+_site

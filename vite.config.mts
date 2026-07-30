@@ -8,5 +8,7 @@ import 'three'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // The built app is published under /vrm/ by scripts/build-site.ts.
+  base: '/vrm/',
   plugins: [react()]
 })
