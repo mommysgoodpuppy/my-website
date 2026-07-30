@@ -41,8 +41,7 @@ depending on which subdomain was requested. A static site can't vary a response
 by `Host`, so verification happens over DNS instead. Both methods are equally
 valid to atproto, and DNS is checked first.
 
-Run `deno task dns` to print the exact records, or read them from `handleDids`
-in `site.config.ts`. Each handle needs:
+Each handle needs a TXT record:
 
 | name | type | value |
 | --- | --- | --- |
@@ -57,16 +56,55 @@ dig +short TXT _atproto.hotbloodedheroine.petplay.fi
 
 ## Deploy
 
-`deno.json` configures Deno Deploy directly:
+Configured in the Deno Deploy dashboard:
 
-```json
-"deploy": {
-  "build": "deno task build",
-  "runtime": { "type": "static", "cwd": "_site" }
-}
+| setting | value |
+| --- | --- |
+| Install Command | `deno task fetchsubs && deno task getbun` |
+| Build Command | `deno task build` |
+| Runtime | Static |
+| Directory | `_site` |
+
+Leave single-page-app mode **off** — each project is its own `.html`, so
+unknown paths should 404 rather than serve the homepage.
+
+### Why submodules are fetched manually
+
+Deno Deploy's Prepare stage *downloads* the source rather than cloning it, so
+the build tree has no `.git` directory. Without one there are no gitlink
+entries and `git submodule update` fails outright:
+
+```
+fatal: not a git repository (or any of the parent directories): .git
 ```
 
-The build needs `deno` and `bun` — `mekgame` aliases vite to `rolldown-vite`
-and depends on a nested submodule via `file:`, which npm's resolver can't
-install, so it uses `bun install`. The other three build through Deno's npm
-support.
+So the pinned commits travel as committed data in `submodules.lock.json`, and
+`deno task fetchsubs` fetches each one directly (`git` itself is present in the
+build image — only the parent repo's metadata is missing). Nested submodules
+resolve normally, because a freshly fetched submodule has a real `.git` of its
+own.
+
+**After bumping any submodule, run `deno task locksubs` and commit the
+result** — otherwise the deploy keeps building the old pinned commit. It
+records what's committed to `HEAD`, not your local checkout, and warns if the
+two have drifted.
+
+`fetchsubs` skips directories that already have content, so it's a no-op
+locally; in a normal clone use `deno task submodules`. Either way
+`deno task preflight` catches an empty checkout early with a readable error.
+
+### Why bun is vendored
+
+`mekgame` depends on its nested `ecctrl` submodule through a `file:` specifier,
+and ecctrl's peer dependencies only resolve against bun's flat `node_modules`
+layout. Deno Deploy has no bun, and its `node`, `npm`, `npx`, `yarn` and `pnpm`
+are all shims over Deno — "all JavaScript inside of the builder is executed
+using Deno" — so no package manager there can install it.
+
+`deno task getbun` downloads the bun linux-x64 binary from its npm platform
+package and extracts it to `.bun/` with `tar`. It no-ops on other platforms, so
+locally the build just uses bun from PATH. `scripts/run-bun.ts` picks whichever
+is available.
+
+The bun version is pinned in `scripts/get-bun.ts`. The other three projects
+build through Deno's npm support and need nothing extra.

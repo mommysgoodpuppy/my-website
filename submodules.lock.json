@@ -1,0 +1,32 @@
+[
+  {
+    "path": "submodules/bodywebxr",
+    "url": "https://github.com/mommysgoodpuppy/bodywebxr",
+    "sha": "c044cea6a65c8002ddc081e2ee84245108fa70f6"
+  },
+  {
+    "path": "submodules/flickmouse",
+    "url": "https://github.com/mommysgoodpuppy/flickmouse",
+    "sha": "fae8f4094786e2a144b3b8b37eed33928bfad773"
+  },
+  {
+    "path": "submodules/GOLXROG",
+    "url": "https://github.com/mommysgoodpuppy/GOLXROG",
+    "sha": "4e914338e2bd37aa09bb20382f169b67ec6b1bce"
+  },
+  {
+    "path": "submodules/jellysliderxr",
+    "url": "https://github.com/mommysgoodpuppy/jellysliderxr",
+    "sha": "c5386463ae412f6b5d3cbb872c92d86ca97278bc"
+  },
+  {
+    "path": "submodules/mapgame",
+    "url": "https://github.com/mommysgoodpuppy/mapgame.git",
+    "sha": "d061ac1d11a0423efcfff18bdd89dc6a42f85a73"
+  },
+  {
+    "path": "submodules/mekgame",
+    "url": "https://github.com/goodpuppies/mekgame.git",
+    "sha": "d36a80e27662fc0a31b39063c6feb320d9e32743"
+  }
+]

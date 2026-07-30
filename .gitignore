@@ -27,3 +27,6 @@ dist-ssr
 public/models/Velle.vrm
 # Generated static site
 _site
+
+# Vendored bun binary (scripts/get-bun.ts)
+.bun

@@ -1,10 +1,31 @@
 {
   "tasks": {
     "dev": "deno run -A --node-modules-dir npm:vite --host",
-    "buildjelly": "cd submodules/jellysliderxr && deno run -A --node-modules-dir npm:vite build",
-    "buildflick": "cd submodules/flickmouse && deno task build",
-    "buildgol":   "cd submodules/GOLXROG && deno task build",
-    "buildmek": "cd submodules/mekgame && bun install && bun run build",
+    // Local clones have a .git, so plain git works. Deno Deploy downloads the
+    // source without one, so its build uses fetchsubs instead.
+    "submodules": "git submodule update --init --recursive",
+    "fetchsubs": "deno run -A scripts/fetch-submodules.ts",
+    "locksubs": "deno run -A scripts/lock-submodules.ts",
+    "preflight": "deno run -A scripts/check-submodules.ts",
+    "buildjelly": {
+      "command": "cd submodules/jellysliderxr && deno run -A --node-modules-dir npm:vite build",
+      "dependencies": ["preflight"]
+    },
+    // -c pins each sub-build to its own config. Without it, a missing submodule
+    // makes `deno task build` walk up to this file and re-run itself forever.
+    "buildflick": {
+      "command": "cd submodules/flickmouse && deno task -c deno.json build",
+      "dependencies": ["preflight"]
+    },
+    "buildgol": {
+      "command": "cd submodules/GOLXROG && deno task -c deno.json build",
+      "dependencies": ["preflight"]
+    },
+    "getbun": "deno run -A scripts/get-bun.ts",
+    "buildmek": {
+      "command": "cd submodules/mekgame && deno run -A ../../scripts/run-bun.ts install && deno run -A ../../scripts/run-bun.ts run build",
+      "dependencies": ["preflight"]
+    },
     "buildvite": "deno run -A --node-modules-dir npm:vite build",
     "build": {
       "command": "deno run -A scripts/build-site.ts",
@@ -16,7 +37,6 @@
         "buildvite"
       ]
     },
-    "dns": "deno run -A scripts/dns-records.ts",
     "preview": "deno run -A --node-modules-dir npm:vite preview",
     "serve": "deno run --allow-net --allow-read jsr:@std/http/file-server _site/"
   },
