@@ -10,8 +10,6 @@ const section = document.getElementById("server");
 const intro = document.getElementById("server-intro");
 const grid = document.getElementById("server-grid");
 
-const GiB = 1024 ** 3;
-const gib = (b) => (b / GiB).toFixed(1);
 const pct = (n) => (n == null ? "–" : `${Math.round(n)}%`);
 
 function rate(bytesPerSec) {
@@ -19,16 +17,6 @@ function rate(bytesPerSec) {
   if (bytesPerSec >= 1024 ** 2) return `${(bytesPerSec / 1024 ** 2).toFixed(1)} MB/s`;
   return `${(bytesPerSec / 1024).toFixed(1)} KB/s`;
 }
-
-function duration(seconds) {
-  const d = Math.floor(seconds / 86400);
-  const h = Math.floor((seconds % 86400) / 3600);
-  if (d) return `${d} day${d === 1 ? "" : "s"}, ${h} h`;
-  return `${h} h ${Math.floor((seconds % 3600) / 60)} min`;
-}
-
-// "Intel(R) Core(TM) i5-5200U CPU @ 2.20GHz" -> "Intel Core i5-5200U @ 2.20GHz"
-const cleanCpu = (cpu) => cpu?.replace(/\((R|TM)\)/gi, "").replace(/\s+CPU\s+@/, " @").replace(/\s+/g, " ").trim();
 
 function sparkline(values, max) {
   const points = values.filter((v) => v != null);
@@ -70,11 +58,9 @@ function tile(label, value, sub, chart, wide) {
 }
 
 function render(s) {
-  const an = (word) => (/^[aeiou]/i.test(word) ? `an ${word}` : `a ${word}`);
-  const cpu = cleanCpu(s.cpu);
-  intro.textContent = `This site is self-hosted on ${s.machine ? an(s.machine) : "a machine"}` +
-    (cpu ? ` with ${an(cpu)} (${s.threads} threads)` : "") +
-    `, running ${s.os ?? "Linux"}. Live, updated every ${s.sampleSeconds} seconds.`;
+  // The endpoint deliberately says nothing about what the machine is (model,
+  // OS, kernel, uptime), only how busy it is.
+  intro.textContent = `This site is self-hosted. Live, updated every ${s.sampleSeconds} seconds.`;
 
   const history = s.history ?? [];
   const tiles = [
@@ -85,17 +71,11 @@ function render(s) {
   }
   tiles.push(tile(
     "Memory",
-    `${gib(s.memory.used)} / ${gib(s.memory.total)} GiB`,
-    s.memory.swapTotal ? `swap ${gib(s.memory.swapUsed)} GiB in use` : null,
+    pct(s.memory.usedPercent),
+    s.memory.swapPercent != null ? `swap ${pct(s.memory.swapPercent)}` : null,
+    sparkline(history.map((h) => h.mem), 100),
   ));
-  if (s.disk) {
-    tiles.push(tile("Disk", `${gib(s.disk.used)} / ${gib(s.disk.total)} GiB`, `${pct((100 * s.disk.used) / s.disk.total)} full`));
-  }
-  if (s.power.battery) {
-    const b = s.power.battery;
-    const source = s.power.ac === false ? "running on battery!" : "on mains; the battery is its UPS";
-    tiles.push(tile("Battery", pct(b.percent), source));
-  }
+  if (s.diskPercent != null) tiles.push(tile("Disk", `${pct(s.diskPercent)} full`));
   const net = s.network;
   if (net.kind) {
     const link = net.wifi ? `Wi-Fi, ${net.wifi.dbm} dBm` : net.kind === "wifi" ? "Wi-Fi" : "wired";
@@ -106,7 +86,6 @@ function render(s) {
       sparkline(history.map((h) => (h.rx ?? 0) + (h.tx ?? 0))),
     ));
   }
-  tiles.push(tile("Uptime", duration(s.uptimeSeconds), `kernel ${s.kernel}`));
   if (s.apps?.length) {
     const since = new Date(s.ldeploySince).toLocaleString();
     tiles.push(tile(

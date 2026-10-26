@@ -89,6 +89,7 @@ function renderHomePage(): string {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Projects</title>
+    <link rel="icon" href="/favicon.ico">
     <style>
         body {
             font-family: system-ui, -apple-system, sans-serif;
@@ -222,12 +223,17 @@ async function main() {
   await Deno.copyFile("robots.txt", join(OUT, "robots.txt"));
   console.log("  + /robots.txt");
 
+  // The PetPlay icon (from petplay/resources/petplay.ico). At the root, so
+  // project pages that don't declare an icon get it too.
+  await Deno.copyFile("favicon.ico", join(OUT, "favicon.ico"));
+  console.log("  + /favicon.ico");
+
   // Fills in the homepage's server section from /api/server, which the host
   // (ldeploy) serves. Elsewhere the fetch fails and the section stays hidden.
   await Deno.copyFile("scripts/server-stats.js", join(OUT, "server-stats.js"));
   console.log("  + /server-stats.js");
 
-  console.log(`\nDone. ${writtenBy.size + 3} files in ${OUT}/`);
+  console.log(`\nDone. ${writtenBy.size + 4} files in ${OUT}/`);
 }
 
 if (import.meta.main) {
