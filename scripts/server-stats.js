@@ -75,7 +75,6 @@ function render(s) {
     s.memory.swapPercent != null ? `swap ${pct(s.memory.swapPercent)}` : null,
     sparkline(history.map((h) => h.mem), 100),
   ));
-  if (s.diskPercent != null) tiles.push(tile("Disk", `${pct(s.diskPercent)} full`));
   const net = s.network;
   if (net.kind) {
     const link = net.wifi ? `Wi-Fi, ${net.wifi.dbm} dBm` : net.kind === "wifi" ? "Wi-Fi" : "wired";
