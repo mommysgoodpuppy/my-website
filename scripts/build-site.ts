@@ -138,12 +138,55 @@ function renderHomePage(): string {
             font-size: 14px;
             margin-top: 5px;
         }
+        /* Live server stats, filled in by server-stats.js */
+        .server-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .tile {
+            background: #2a2a2a;
+            border-radius: 6px;
+            padding: 12px;
+        }
+        .tile .label {
+            color: #999;
+            font-size: 13px;
+        }
+        .tile .value {
+            color: #fff;
+            font-size: 20px;
+            font-variant-numeric: tabular-nums;
+            margin-top: 2px;
+        }
+        .tile .sub {
+            color: #999;
+            font-size: 13px;
+            font-variant-numeric: tabular-nums;
+        }
+        .tile svg {
+            display: block;
+            width: 100%;
+            height: 34px;
+            margin-top: 6px;
+        }
+        .tile.wide {
+            grid-column: 1 / -1;
+        }
     </style>
 </head>
 <body>
     <h1>My Projects &amp; Demos</h1>
     <ul>${projectList}
     </ul>
+    <section id="server" hidden>
+        <hr style="border: 1px solid #444; margin: 40px 0;">
+        <h2>The server</h2>
+        <div class="description" id="server-intro"></div>
+        <div class="server-grid" id="server-grid"></div>
+    </section>
+    <script src="/server-stats.js" defer></script>
     <hr style="border: 1px solid #444; margin: 40px 0;">
     <h2>Contact</h2>
     <ul class="contact">
@@ -179,7 +222,12 @@ async function main() {
   await Deno.copyFile("robots.txt", join(OUT, "robots.txt"));
   console.log("  + /robots.txt");
 
-  console.log(`\nDone. ${writtenBy.size + 2} files in ${OUT}/`);
+  // Fills in the homepage's server section from /api/server, which the host
+  // (ldeploy) serves. Elsewhere the fetch fails and the section stays hidden.
+  await Deno.copyFile("scripts/server-stats.js", join(OUT, "server-stats.js"));
+  console.log("  + /server-stats.js");
+
+  console.log(`\nDone. ${writtenBy.size + 3} files in ${OUT}/`);
 }
 
 if (import.meta.main) {
