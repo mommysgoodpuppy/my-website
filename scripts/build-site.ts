@@ -72,7 +72,17 @@ async function buildRoute(route: Route) {
   console.log(`  + ${route.path.padEnd(20)} <- ${srcDir}`);
 }
 
-function renderHomePage(): string {
+/**
+ * A short content hash for cache-busting. Cloudflare caches .js for hours, so
+ * an unchanged URL would keep serving the old script after a deploy; the HTML
+ * isn't cached, so a new ?v= reaches visitors immediately.
+ */
+async function contentHash(path: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", await Deno.readFile(path));
+  return [...new Uint8Array(digest).slice(0, 4)].map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function renderHomePage(statsVersion: string): string {
   const projectList = routes
     .map(
       (r) => `
@@ -187,7 +197,7 @@ function renderHomePage(): string {
         <div class="description" id="server-intro"></div>
         <div class="server-grid" id="server-grid"></div>
     </section>
-    <script src="/server-stats.js" defer></script>
+    <script src="/server-stats.js?v=${statsVersion}" defer></script>
     <hr style="border: 1px solid #444; margin: 40px 0;">
     <h2>Contact</h2>
     <ul class="contact">
@@ -217,7 +227,10 @@ async function main() {
     console.warn("  ! skipping vrm app: dist/ not found");
   }
 
-  await Deno.writeTextFile(join(OUT, "index.html"), renderHomePage());
+  await Deno.writeTextFile(
+    join(OUT, "index.html"),
+    renderHomePage(await contentHash("scripts/server-stats.js")),
+  );
   console.log("  + /                  <- generated from site.config.ts");
 
   await Deno.copyFile("robots.txt", join(OUT, "robots.txt"));
