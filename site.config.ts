@@ -66,5 +66,20 @@ export const routes: Route[] = [
   },
 ];
 
+/** A project hosted elsewhere: linked from the homepage, not built here. */
+export interface Link {
+  url: string;
+  name: string;
+  description: string;
+}
+
+export const links: Link[] = [
+  {
+    url: "https://workman.petplay.fi/",
+    name: "Workman",
+    description: "Website for the Workman programming language (draft)",
+  },
+];
+
 /** The handle linked from the homepage's contact section. */
 export const primaryHandle = "hotbloodedheroine.petplay.fi";

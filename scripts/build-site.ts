@@ -9,7 +9,7 @@
 
 import { emptyDir, ensureDir, walk } from "jsr:@std/fs@^1.0.0";
 import { dirname, join, relative } from "jsr:@std/path@^1.0.0";
-import { primaryHandle, type Route, routes } from "../site.config.ts";
+import { links, primaryHandle, type Route, routes } from "../site.config.ts";
 
 const OUT = "_site";
 
@@ -83,12 +83,15 @@ async function contentHash(path: string): Promise<string> {
 }
 
 function renderHomePage(statsVersion: string): string {
-  const projectList = routes
+  const projectList = [
+    ...routes.map((r) => ({ href: r.path, name: r.name, description: r.description })),
+    ...links.map((l) => ({ href: l.url, name: l.name, description: l.description })),
+  ]
     .map(
-      (r) => `
+      (p) => `
       <li>
-        <a href="${r.path}">${r.name}</a>
-        <div class="description">${r.description}</div>
+        <a href="${p.href}">${p.name}</a>
+        <div class="description">${p.description}</div>
       </li>`,
     )
     .join("");
